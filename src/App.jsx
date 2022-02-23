@@ -52,6 +52,8 @@ export const App = () => {
                 {/* set関数「setTodos()」で更新された配列「todos」をmap関数に渡して1つずつ展開 */}
                 {todos.map((todo) => (
                     <li key={todo.id}>{todo.id}：{todo.text}</li>
+                    // Each child in a list should have a unique "key" prop.
+                    // map関数を使用する際にユニークなkeyを設定する
                 ))}
             </ul>
         </div>
