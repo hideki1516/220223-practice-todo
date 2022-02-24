@@ -30,6 +30,7 @@ export const App = () => {
         setTodo(e.target.value);
     };
 
+    // 入力の値を取得して、新しい状態を設定する関数
     const handleFormSubmit = (e) => {
         // ブラウザのデフォルトの動作や、送信時にページを更新しないようにする
         e.preventDefault();
@@ -51,6 +52,19 @@ export const App = () => {
         setTodo('');
     };
 
+    // ToDo項目を ToDo配列から削除する関数
+    // handleDeleteClick関数の引数(id)にはクリックされたtodo.idが渡っている
+    const handleDeleteClick = (id) => {
+        // 配列「todos」をもとにfilter関数を使用（引数(todo)には配列「todos」が渡っている）
+        const removeItem = todos.filter((todo) => {
+            // 削除する項目と一致しない、残りのTODOを抽出して変数「removeItem」に渡す
+            return todo.id !== id;
+        });
+        
+        // setTodos()にremoveItemを渡してtodosを更新
+        setTodos(removeItem);
+    };
+
     return (
         <div className='App'>
             {/* onSubmitプロパティにhandleFormSubmit関数を渡す */}
@@ -69,9 +83,13 @@ export const App = () => {
             <ul className='todo-list'>
                 {/* set関数「setTodos()」で更新された配列「todos」をmap関数に渡して1つずつ展開 */}
                 {todos.map((todo) => (
-                    <li key={todo.id}>{todo.id}：{todo.text}</li>
+                    <li key={todo.id}>
+                        {todo.id}：{todo.text}
+                        {/* クリックしたtodoの「id」を引数に渡す */}
+                        <button onClick={() => handleDeleteClick(todo.id)}>X</button>
+                    </li>
                     // Each child in a list should have a unique "key" prop.
-                    // map関数を使用する際にユニークなkeyを設定する
+                    // map関数を使用する際にユニークなkey propを設定する
                 ))}
             </ul>
         </div>
