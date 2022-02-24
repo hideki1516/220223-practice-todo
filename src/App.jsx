@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles.css';
 
 export const App = () => {
-    // 配列「todos」の状態を管理（初期値：空の配列を設定）
-    const [todos, setTodos] = useState([]);
+    // 配列「todos」の状態を管理（初期値に関数を設定）
+    const [todos, setTodos] = useState(() => {
+        // localStorageに保存された「todos」を取得して変数「savedTodos」に格納
+        const savedTodos = localStorage.getItem('todos');
+        // 変数「savedTodos」がtrueのとき（値が渡ってきたとき）
+        if (savedTodos) {
+            // JSON.parse()で変数「savedTodos」の文字列をオブジェクトに変換
+            return JSON.parse(savedTodos);
+        } else {
+            // falseのとき（値が渡ってこなかったとき）は空配列を渡す
+            return [];
+        }
+    });
     // 入力された値「todo」の状態を管理（初期値：空の入力値（文字列）を設定）
     const [todo, setTodo] = useState('');
+
+    // 配列「todos」の値が変わったときに実行する処理
+    useEffect(() => {
+        // todosの値を文字列に変換してlocalStorageに格納
+        // Key[更新したい値], Value[keyに渡したい値]
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos]);
 
     const handleInputChange = (e) => {
         // set関数「setTodo」で入力された値（value）を変数「todo」に設定する
@@ -20,7 +38,7 @@ export const App = () => {
         if (todo !== '') {
             // 関数「setTodos()」に配列「todos」を更新するための処理を設定
             setTodos([
-                // 配列「todo」に格納された値を展開（現在の状態を展開）
+                // 配列「todo」に格納された値をコピー（現在の状態をstateにコピー）
                 ...todos,
                 {
                     id: todos.length + 1, // idを取得（mapのindexと扱い同じ？）
