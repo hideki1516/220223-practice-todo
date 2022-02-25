@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { TodoItem } from './TodoItem';
+import { AddTodoForm } from './AddTodoForm';
+import { EditForm } from './EditForm';
 import './styles.css';
 
 export const App = () => {
@@ -34,7 +37,7 @@ export const App = () => {
         localStorage.setItem('todos', JSON.stringify(todos));
     }, [todos]);
 
-    const handleInputChange = (e) => {
+    const handleAddInputChange = (e) => {
         // set関数「setTodo」を使用して、入力された値（value）を変数「todo」に設定する
         setTodo(e.target.value);
     };
@@ -47,7 +50,7 @@ export const App = () => {
     };
 
     // 入力の値を取得して、新しい状態を設定する関数
-    const handleFormSubmit = (e) => {
+    const handleAddFormSubmit = (e) => {
         // ブラウザのデフォルトの動作や、送信時にページを更新しないようにする
         e.preventDefault();
 
@@ -121,53 +124,29 @@ export const App = () => {
     return (
         <div className='App'>
             {isEditing ? (
-                <form onSubmit={handleEditFormSubmit}>
-                    <h2>Edit Todo</h2>
-                    <label htmlFor='editTodo'>Edit todo: </label>
-                    {/* Editボタンを押したTODO項目=currentTodoオブジェクトの「text」をvalue（入力欄の値）に設定 */}
-                    
-                    <input 
-                        name='todo'
-                        type='text'
-                        placeholder='Edit todo'
-                        value={currentTodo.text}
-                        onChange={handleEditInputChange}
-                    />
-                    {/* handleEditFormSubmit関数を使用してフォームを送信 */}
-                    <button type='submit'>Update</button>
-                    {/* isEditingの状態をfalseに戻して編集モードをキャンセルにする */}
-                    <button onClick={() => setIsEditing(false)}>Cancel</button>
-                </form>
+                <EditForm
+                    currentTodo={currentTodo}
+                    setIsEditing={setIsEditing}
+                    onEditInputChange={handleEditInputChange}
+                    onEditFormSubmit={handleEditFormSubmit}
+                />
             ) : (
-                <form onSubmit={handleFormSubmit}>
-                    <h2>Add Todo</h2>
-                    <label htmlFor='todo'>Add todo: </label>
-                    <input 
-                        name='todo'
-                        type='text'
-                        placeholder='Create a new todo'
-                        value={todo}
-                        // handleInputChange関数（todoの値をsetTodoに渡す）
-                        onChange={handleInputChange}
-                    />
-                    <button type='submit'>Add</button>
-                </form>
+                <AddTodoForm
+                    todo={todo}
+                    onAddInputChange={handleAddInputChange}
+                    onAddFormSubmit={handleAddFormSubmit}
+                />
             )}
 
             {/* 追加されたTodoを保持するリスト */}
             <ul className='todo-list'>
                 {/* set関数「setTodos()」で更新された配列「todos」をmap関数に渡して1つずつ展開 */}
                 {todos.map((todo) => (
-                    <li key={todo.id}>
-                        {/* todoオブジェクトのtextの値を表示 */}
-                        {todo.id}：{todo.text}
-                        {/* 現在のTODO項目を全て引数に渡す */}
-                        <button onClick={()=> handleEditClick(todo)}>Edit</button>
-                        {/* クリックしたtodoの「id」を引数に渡す */}
-                        <button onClick={() => handleDeleteClick(todo.id)}>X</button>
-                    </li>
-                    // Each child in a list should have a unique "key" prop.
-                    // map関数を使用する際にユニークなkey propを設定する
+                    <TodoItem
+                        todo={todo}
+                        onEditClick={handleEditClick}
+                        onDeleteClick={handleDeleteClick}
+                    />
                 ))}
             </ul>
         </div>
